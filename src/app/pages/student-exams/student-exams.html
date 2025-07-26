@@ -1,0 +1,97 @@
+<p-toast
+  [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"
+/>
+
+@if(isLoading){
+<div class="card flex justify-center">
+  <p-progress-spinner
+    strokeWidth="8"
+    fill="transparent"
+    animationDuration=".5s"
+    [style]="{ width: '50px', height: '50px' }"
+  />
+</div>
+}@else {
+<div class="p-20">
+  @if(!examStarted && !examSubmitted){
+  <div class="p-6 space-y-6">
+    <app-exam-instruction (accepted)="startExam()" [durationInMinutes]="60"></app-exam-instruction>
+  </div>
+  } @if(examStarted && !examSubmitted){
+  <div class="space-y-6">
+    <div
+      class="flex justify-between items-center p-4 bg-gray-100 rounded shadow"
+    >
+      <span class="text-lg font-bold text-indigo-700"
+        >Remaining Time: {{ timeLeft }}</span
+      >
+    
+
+
+      <p-button
+        label="Submit"
+        icon="pi pi-check"
+        severity="danger"
+        (onClick)="submitExam()"
+      />
+    </div>
+
+    <app-exam-question
+      [question]="exam.questions[currentPage]"
+      [selectedChoiceId]="answers[exam.questions[currentPage].id]"
+      (answered)="storeAnswer($event.questionId, $event.selectedChoiceId)"
+    >
+    </app-exam-question>
+<div class="flex justify-between items-center pt-4">
+  <p-button
+    label="Previous"
+    icon="pi pi-arrow-left"
+    (onClick)="prevQuestion()"
+    [disabled]="currentPage === 0"
+    severity="secondary"
+    class="w-32"
+  />
+
+  <span class="text-sm text-gray-500">
+    Question {{ currentPage + 1 }} of {{ exam.questions.length }}
+  </span>
+
+  <!-- إذا كنت في آخر سؤال، أظهر زر "إنهاء" بدلاً من "Next" -->
+  @if(currentPage === exam.questions.length - 1) {
+    <p-button
+      label="Finish Exam"
+      icon="pi pi-check"
+      severity="danger"
+      (onClick)="submitExam()"
+      class="w-40"
+    />
+  } @else {
+    <p-button
+      label="Next"
+      iconPos="right"
+      icon="pi pi-arrow-right"
+      (onClick)="nextQuestion()"
+      severity="primary"
+      class="w-32"
+    />
+  }
+</div>
+    <div class="flex flex-wrap gap-2 justify-center pt-6">
+      <p-button
+        *ngFor="let q of exam.questions; let i = index"
+        [label]="isAnswered(q.id) ? (i + 1).toString() + '- Answerd' : (i + 1).toString() + '- Draft'"
+        [severity]="isAnswered(q.id) ? 'success' : 'secondary'"
+        (onClick)="goToPage(i)"
+        size="small"
+      >
+      </p-button>
+    </div>
+  </div>
+
+  } @if(examSubmitted){
+  <div class="text-center text-green-600 font-bold text-xl">
+    Exam submitted successfully!
+  </div>
+  }
+</div>
+}

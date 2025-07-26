@@ -1,0 +1,162 @@
+<app-sider [(visible)]="isSiderVisible"></app-sider>
+<nav class="bg-white shadow-md">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <!-- Logo + Site Name -->
+    <div class="flex items-center gap-2 cursor-pointer" (click)="toggleSider()">
+      <span class="text-2xl font-bold text-gray-900">Exams System</span>
+    </div>
+
+    <!-- Desktop Nav Links -->
+    <ul class="hidden md:flex gap-6 items-center text-gray-700 font-medium">
+      <li>
+        <a
+          routerLink="/home"
+          routerLinkActive="text-blue-600"
+          class="hover:text-blue-600"
+          >Home</a
+        >
+      </li>
+      @if(isAdmin){
+      <li>
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="text-blue-600"
+          class="hover:text-blue-600"
+          >Dashboard</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/students"
+          routerLinkActive="text-blue-600"
+          class="hover:text-blue-600"
+          >Students</a
+        >
+      </li>
+    }
+      <li>
+        <a
+          routerLink="/subjects"
+          routerLinkActive="text-blue-600"
+          class="hover:text-blue-600"
+          >Subjects</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/exams"
+          routerLinkActive="text-blue-600"
+          class="hover:text-blue-600"
+          >Exams</a
+        >
+      </li>
+    </ul>
+
+    <!-- Desktop Buttons -->
+    @if(!isAuthenticated){
+    <div class="hidden md:flex gap-4 items-center">
+      <a
+        routerLink="/login"
+        class="px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition"
+      >
+        Login
+      </a>
+      <a
+        routerLink="/register"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+      >
+        Register
+      </a>
+    </div>
+    }@else {
+    <div class="hidden md:flex gap-4 items-center">
+      <a
+        (click)="OnLogout()"
+        class="px-4 py-2 bg-blue-600 cursor-pointer text-white rounded hover:bg-blue-700 transition"
+      >
+        Logout
+      </a>
+    </div>
+    }
+
+    <!-- Mobile Menu Button -->
+    <button class="md:hidden" (click)="toggleMobileMenu()">
+      @if (!menuOpen) {<svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-6 h-6 text-gray-700"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        /></svg
+      >} @else {
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-6 h-6 text-gray-700"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+      }
+    </button>
+  </div>
+
+  @if(menuOpen){
+  <div class="md:hidden px-4 pb-4 space-y-2 text-gray-700">
+    <a routerLink="/home" routerLinkActive="text-blue-600" class="block py-1"
+      >Home</a
+    >
+    @if(isAdmin){
+    <a routerLink="/students" routerLinkActive="text-blue-600" class="block py-1"
+      >Students</a
+    >
+    <a routerLink="/dashboard" routerLinkActive="text-blue-600" class="block py-1"
+      >Dashboard</a
+    >
+    }
+    <a
+      routerLink="/subjects"
+      routerLinkActive="text-blue-600"
+      class="block py-1"
+      >Subjects</a
+    >
+    <a routerLink="/exams" routerLinkActive="text-blue-600" class="block py-1"
+      >Exams</a
+    >
+    @if(!isAuthenticated){
+<a
+      routerLink="/login"
+      class="block py-2 border border-blue-600 text-center text-blue-600 rounded hover:bg-blue-50"
+    >
+      Login
+    </a>
+    <a
+      routerLink="/register"
+      class="block py-2 bg-blue-600 text-white text-center rounded hover:bg-blue-700"
+    >
+      Register
+    </a>
+    }@else {
+<a
+      (click)="OnLogout()"
+      class="block py-2 bg-blue-600 text-white text-center rounded hover:bg-blue-700"
+    >
+      Logout
+    </a>
+    }
+    
+  </div>
+  }
+</nav>

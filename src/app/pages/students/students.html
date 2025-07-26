@@ -1,0 +1,119 @@
+<p-toast
+  [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"
+/>
+<div class="p-20">
+  @if(isLoading){
+  <div class="card flex justify-center">
+    <p-progress-spinner
+      strokeWidth="8"
+      fill="transparent"
+      animationDuration=".5s"
+      [style]="{ width: '50px', height: '50px' }"
+    />
+  </div>
+  }@else {
+  <div
+    class="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 mb-6 bg-white p-6 rounded-xl shadow-sm"
+  >
+    <!-- 🔍 Search Field -->
+    <div class="w-full lg:w-1/2">
+      <label
+        for="search-input"
+        class="block text-sm font-semibold text-gray-800 mb-2"
+      >
+        🔍 Search by Student Name
+      </label>
+      <div class="relative">
+        <span
+          class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"
+        >
+          <i class="pi pi-search"></i>
+        </span>
+        <input
+          id="search-input"
+          type="text"
+          pInputText
+          [(ngModel)]="search"
+          (input)="onSearch()"
+          placeholder="Type to search..."
+          class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+        />
+      </div>
+    </div>
+
+    <!-- 🔃 Sort Dropdown -->
+    <div class="w-full lg:w-1/3">
+      <label
+        for="sort-input"
+        class="block mb-2 text-sm font-semibold text-gray-800"
+      >
+        🔃 Sort by
+      </label>
+
+      <p-autoComplete
+        [(ngModel)]="sorting"
+        [suggestions]="filteredSortingOptions"
+        (completeMethod)="filterSorting($event)"
+        field="label"
+        [dropdown]="true"
+        placeholder="Select sorting option"
+        [forceSelection]="true"
+        (onSelect)="onSortChange($event)"
+        class="w-full"
+      >
+        <ng-template let-option pTemplate="item">
+          <div class="text-sm">{{ option.label }}</div>
+        </ng-template>
+      </p-autoComplete>
+    </div>
+  </div>
+
+  <div class="card">
+    <p-table
+      [value]="students()"
+      selectionMode="single"
+      [(selection)]="selectedStudent"
+      (onRowSelect)="onRowSelect($event)"
+      [tableStyle]="{'min-width': '50rem'}"
+    >
+      <ng-template #header>
+        <tr>
+          <th>Student</th>
+          <th>Email</th>
+          <th>Activation</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-student>
+        <tr [pSelectableRow]="student">
+          <td class="flex items-center gap-3">
+            <p-avatar
+              [image]="student.profilePictureUrl || 'default.jpg'"
+              size="large"
+              shape="circle"
+              class="shadow-md"
+            ></p-avatar>
+            <span class="font-medium text-gray-800"
+              >{{ student.fullName }}</span
+            >
+          </td>
+          <td>{{student.email}}</td>
+          <td>
+            <p-toggleswitch [(ngModel)]="student.isActive" (onChange)="changeStudentStatus(student.id)" />
+            
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <p-paginator
+      (onPageChange)="onPageChange($event)"
+      [first]="pageIndex * pageSize"
+      [rows]="pageSize"
+      [totalRecords]="totalCount()"
+      [showCurrentPageReport]="true"
+      [showPageLinks]="false"
+      [showJumpToPageDropdown]="false"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    />
+  </div>
+  }
+</div>
