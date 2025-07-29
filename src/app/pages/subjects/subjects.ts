@@ -49,22 +49,28 @@ export class Subjects {
   constructor(
     private confirmationService: ConfirmationService,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.authService.isAuthenticated().subscribe((isAuth) => {
+      if (!isAuth) {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
   private subjectService = inject(SubjectService);
   isLoading = false;
   selectedSubject: SubjectResponse | null = null;
   displayEditDialog = false;
   displayCreateDialog: boolean = false;
   openCreateDialog() {
-  this.createForm.reset(); 
-  this.displayCreateDialog = true;
-}
+    this.createForm.reset();
+    this.displayCreateDialog = true;
+  }
 
   editForm: FormGroup = new FormGroup({
-    name: new FormControl(null, [Validators.required]),
+    name: new FormControl(null, [Validators.required,Validators.pattern('^[a-zA-Z ]+$')]),
   });
   createForm: FormGroup = new FormGroup({
-    name: new FormControl(null, [Validators.required]),
+    name: new FormControl(null, [Validators.required,Validators.pattern('^[a-zA-Z ]+$')]),
   });
   openEditDialog(subject: SubjectResponse) {
     this.selectedSubject = subject;
@@ -81,15 +87,29 @@ export class Subjects {
     const updatedSubject: SubjectDTO = {
       Name: this.editForm.value.name,
     };
-    
+
     this.subjectService
       .updateSubject(this.selectedSubject.id, updatedSubject)
       .subscribe({
         next: () => {
           this.displayEditDialog = false;
           this.loadSubjects();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Subject updated successfully',
+          });
           this.isLoading = false;
         },
+        error: (err) => {
+          console.error('Server error:', err.error);
+          this.messageService.add({
+            severity: 'error',
+            summary: err.error.message || 'Error',
+            detail: err.error.validationErrors[0]?.errors[0] || 'Failed to update subject',
+          });
+          this.isLoading = false;
+        }
       });
   }
 
@@ -135,15 +155,19 @@ export class Subjects {
       .set('sorting', this.sorting);
 
     this.subjectService.getAllSubject(params).subscribe({
-      next:(res) => {
-      this.subjects.set(res.data);
-      this.totalCount.set(res.totalCount);
-      this.isLoading = false;
-    },
-    error: err=>{
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Internal Server Error' });
-    }
-  });
+      next: (res) => {
+        this.subjects.set(res.data);
+        this.totalCount.set(res.totalCount);
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Internal Server Error',
+        });
+      },
+    });
   }
 
   onPageChange(event: PaginatorState) {
@@ -184,7 +208,6 @@ export class Subjects {
         this.subjectService.deleteSubject(subjectId).subscribe({
           next: (response) => {
             this.messageService.add({
-              ////LEH MSH S8ALA
               severity: 'info',
               summary: 'Confirmed',
               detail: response.message,
@@ -197,38 +220,44 @@ export class Subjects {
             console.error('Server error:', err.error.message);
           },
         });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Confirmed',
-          detail: 'Closed',
-          life: 3000,
-        });
-      },
+      }
     });
   }
   submitCreate() {
-  if (this.createForm.invalid) return;
+    if (this.createForm.invalid) return;
     this.isLoading = true;
-  const newSubject : SubjectDTO = {
-    Name:this.createForm.value.name
-  } 
-  this.subjectService.createSubject(newSubject).subscribe({
-    next: () => {
-      this.displayCreateDialog = false;
-      this.loadSubjects();
-      this.isLoading=false;
-    },
-    error: (err) => {
-      console.error('Server error:', err.error);
-    }
-  });
-}
-QuestionsNavigation(subject:SubjectResponse){
-  this.router.navigate(['/subjects','questions',subject.id],{ queryParams : { subjectName: subject.name }});
-}
-requestExam(subject:SubjectResponse){
-  this.router.navigate(['/exams',subject.id],{ queryParams : { subjectName: subject.name }});
-}
+    const newSubject: SubjectDTO = {
+      Name: this.createForm.value.name,
+    };
+    this.subjectService.createSubject(newSubject).subscribe({
+      next: () => {
+        this.displayCreateDialog = false;
+        this.loadSubjects();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Subject created successfully',
+        });
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: err.error.message || 'Error',
+          detail: err.error.validationErrors[0]?.errors[0] || 'Failed to create subject',
+        });
+        this.isLoading = false;
+      },
+    });
+  }
+  QuestionsNavigation(subject: SubjectResponse) {
+    this.router.navigate(['/subjects', 'questions', subject.id], {
+      queryParams: { subjectName: subject.name },
+    });
+  }
+  requestExam(subject: SubjectResponse) {
+    this.router.navigate(['/exams', subject.id], {
+      queryParams: { subjectName: subject.name },
+    });
+  }
 }

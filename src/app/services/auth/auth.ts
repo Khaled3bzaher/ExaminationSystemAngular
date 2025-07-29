@@ -14,12 +14,16 @@ export class Auth {
   private router = inject(Router);
 
   isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  isAuthenticated(): Observable<boolean> {
+  return this.isAuthenticatedSubject.asObservable();
+}
 
   constructor(private httpClient: HttpClient) {
     if (this.getToken()) {
       this.isAuthenticatedSubject.next(true);
     }
   }
+  
   loginRequest(loginData: LoginRequest) {
     return this.httpClient.post<ApiResponse<AuthResponse>>(
       `Authentication/Login`,

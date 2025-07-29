@@ -19,7 +19,6 @@ import { Auth } from '../../../services/auth/auth';
   imports: [
     TableModule,
     ProgressSpinner,
-    Toast,
     AvatarModule,
     PaginatorModule,
     DatePipe,
@@ -40,7 +39,7 @@ export class Examshistory {
   pageSize = 5;
   pageIndex = 0;
   search = '';
-  sorting = 'CreatedAtAsc';
+  sorting = 'CreatedAtDesc';
   totalCount = signal(0);
   isAuthenticated :Boolean = false;
 
@@ -97,7 +96,7 @@ export class Examshistory {
     this.selectedExam = event.data;
     if (this.selectedExam) {
       this.messageService.add({
-        severity: 'success',
+        severity: this.selectedExam.examStatus === 'Completed' ? 'success' : 'warn',
         summary: 'Exam History',
         detail: 'Exam Status: ' + this.selectedExam.examStatus,
       });

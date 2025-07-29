@@ -20,19 +20,21 @@ export class Home {
     const navigation = this.route.queryParams.subscribe((params) => {
       if (params['logout'] === 'true') {
         this.messageService.add({
-          severity: 'success',
+          severity: 'info',
           summary: 'Logout',
           detail: 'You have logged out successfully!',
           life: 3000,
         });
       }
       if (params['login'] === 'true') {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Login',
-          detail: 'You have logged in successfully!',
-          life: 3000,
-        });
+        setTimeout(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Login',
+            detail: 'You have logged in successfully!',
+            life: 3000,
+          });
+        }, 100);
       }
     });
   }

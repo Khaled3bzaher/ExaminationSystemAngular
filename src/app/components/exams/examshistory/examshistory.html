@@ -1,6 +1,4 @@
-<p-toast
-  [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"
-/>
+
 @if(isLoading){
 <div class="card flex justify-center">
   <p-progress-spinner
@@ -46,6 +44,7 @@
       (completeMethod)="filterSorting($event)"
       field="label"
       [dropdown]="true"
+      
       placeholder="Select sorting option"
       [forceSelection]="true"
       (onSelect)="onSortChange($event)"

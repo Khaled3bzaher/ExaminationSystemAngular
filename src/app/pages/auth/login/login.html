@@ -1,3 +1,6 @@
+<p-toast
+  [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"
+/>
 @if(isLoading){
 <div class="card flex justify-center">
     <p-progress-spinner
@@ -79,7 +82,7 @@
 
     <p class="mt-10 text-center text-sm/6 text-gray-500">
       Not a member?
-      <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500"
+      <a [routerLink]="['/register']"  class="font-semibold text-indigo-600 hover:text-indigo-500"
         >Register Now</a
       >
     </p>

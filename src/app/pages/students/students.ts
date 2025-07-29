@@ -111,11 +111,11 @@ export class Students {
       });
     }
   }
-  changeStudentStatus(studentId: string) {
-    this.studentsService.toggleStudentStatus(studentId).subscribe({
+  changeStudentStatus(student: StudentResponse) {
+    this.studentsService.toggleStudentStatus(student.id).subscribe({
       next: (res) => {
         this.messageService.add({
-          severity: 'info',
+          severity: student!.isActive === true ? 'success' : 'warn',
           summary: 'Student Status',
           detail: res.message,
         });
