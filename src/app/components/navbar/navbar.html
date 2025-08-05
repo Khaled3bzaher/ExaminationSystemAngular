@@ -33,7 +33,7 @@
           >Students</a
         >
       </li>
-    }
+      }
       <li>
         <a
           routerLink="/subjects"
@@ -70,6 +70,18 @@
     </div>
     }@else {
     <div class="hidden md:flex gap-4 items-center">
+      <p-overlaybadge [value]="notificationCount" (click)="op.toggle($event)">
+    <i class="pi pi-bell cursor-pointer" style="font-size: 2rem"></i>
+</p-overlaybadge>
+    <p-popover #op>
+        <div class="flex flex-col gap-4 w-[35rem]">
+            <div>
+                
+                <span class="font-medium text-surface-900 dark:text-surface-0 block mb-2">Notifications</span>
+                <app-notifications-history (notificationCount)="onNotificationCountChanged($event)"></app-notifications-history>
+            </div>
+        </div>
+    </p-popover>
       <a
         (click)="OnLogout()"
         class="px-4 py-2 bg-red-600 cursor-pointer text-white rounded hover:bg-red-700 transition"
@@ -119,10 +131,16 @@
       >Home</a
     >
     @if(isAdmin){
-    <a routerLink="/students" routerLinkActive="text-blue-600" class="block py-1"
+    <a
+      routerLink="/students"
+      routerLinkActive="text-blue-600"
+      class="block py-1"
       >Students</a
     >
-    <a routerLink="/dashboard" routerLinkActive="text-blue-600" class="block py-1"
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="text-blue-600"
+      class="block py-1"
       >Dashboard</a
     >
     }
@@ -136,7 +154,7 @@
       >Exams</a
     >
     @if(!isAuthenticated){
-<a
+    <a
       routerLink="/login"
       class="block py-2 border border-blue-600 text-center text-blue-600 rounded hover:bg-blue-50"
     >
@@ -149,14 +167,13 @@
       Register
     </a>
     }@else {
-<a
+    <a
       (click)="OnLogout()"
       class="block py-2 bg-red-600 text-white text-center rounded hover:bg-red-700"
     >
       Logout
     </a>
     }
-    
   </div>
   }
 </nav>

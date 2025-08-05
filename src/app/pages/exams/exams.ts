@@ -9,7 +9,5 @@ import { ExamHistoryResponse } from '../../Interfaces/ExamHistoryResponse';
   styleUrl: './exams.css'
 })
 export class Exams {
-  onExamSelect(selected : ExamHistoryResponse){
-    console.log(selected);
-  }
+  
 }

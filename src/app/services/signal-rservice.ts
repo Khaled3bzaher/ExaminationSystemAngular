@@ -5,6 +5,8 @@ import { ExamEvaluatedResponse } from '../Interfaces/ExamEvaluatedResponse';
 import { environment } from '../../environment';
 import { Auth } from './auth/auth';
 import { StartExamNotificationDTO } from '../Interfaces/StartExamNotificationDTO';
+import { NotificationsService } from './notifications-service';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +14,7 @@ import { StartExamNotificationDTO } from '../Interfaces/StartExamNotificationDTO
 export class SignalRService {
   private hubConnection!: signalR.HubConnection;
   private authService = inject(Auth);
+  private notificationService = inject(NotificationsService);
   constructor(private messageService: MessageService) {}
 
   public startConnection() {
@@ -39,6 +42,7 @@ export class SignalRService {
       'ReceiveExamScore',
       (result: ExamEvaluatedResponse) => {
         this.showStudentExamResult(result);
+
       }
     );
     this.hubConnection.on(
@@ -62,6 +66,7 @@ export class SignalRService {
     );
   }
   private showStudentExamResult(result: ExamEvaluatedResponse): void {
+    this.notificationService.notifyNewNotification.next(true);
     this.messageService.add({
       severity: result.examStatus === '1' ? 'error' : 'success',
       summary: 'Exam Result',
@@ -69,6 +74,7 @@ export class SignalRService {
     });
   }
   private showAdminExamResult(result: ExamEvaluatedResponse): void {
+    this.notificationService.notifyNewNotification.next(true);
     this.messageService.add({
       severity: 'info',
       summary: 'New Exam Result Available',
@@ -80,4 +86,5 @@ export class SignalRService {
       this.hubConnection.stop().catch((err) => console.error(err));
     }
   }
+  
 }

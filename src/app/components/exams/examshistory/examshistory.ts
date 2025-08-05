@@ -62,7 +62,6 @@ export class Examshistory {
     ) {
       this.studentId = this.authService.getId()!;
     }
-    console.log(studentIdFromState);
     this.loadExams();
   }
   loadExams() {

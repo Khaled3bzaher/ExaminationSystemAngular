@@ -203,23 +203,42 @@ export class Questions {
     this.submitted = false;
   }
   saveQuestion() {
-    this.submitted = true;
-    this.questionsService.addSubjectQuestion(this.question).subscribe({
-      next: (res) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Question Created',
-          life: 3000,
-        });
-        this.questionDialog = false;
-        this.LoadQuestions();
-      },
-      error: (err) => {
-        console.log(err);
-      },
+  this.submitted = true;
+
+  const isTextValid = this.question.Text && this.question.Text.trim().length > 0;
+  const isLevelValid = this.question.QuestionLevel !== null && this.question.QuestionLevel !== undefined;
+  const areChoicesFilled = this.question.Choices.every(c => c.Text && c.Text.trim().length > 0);
+  const isOneCorrect = this.question.Choices.filter(c => c.isCorrect).length === 1;
+
+  if (!isTextValid || !isLevelValid || !areChoicesFilled || !isOneCorrect) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Please fill all required fields and choose exactly one correct answer.',
     });
+    return;
   }
+
+  this.questionsService.addSubjectQuestion(this.question).subscribe({
+    next: (res) => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'Question Created',
+        life: 3000,
+      });
+      this.questionDialog = false;
+      this.LoadQuestions();
+    },
+    error: (err) => {
+      console.log(err);
+    },
+  });
+}
+hasExactlyOneCorrectChoice(): boolean {
+  return Array.isArray(this.question?.Choices) &&
+         this.question.Choices.filter(c => c.isCorrect).length === 1;
+}
   getCorrectAnswerText(question: QuestionResponse): string {
     return question.choices.find((choice) => choice.isCorrect)?.text || '-';
   }
