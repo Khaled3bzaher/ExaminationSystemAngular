@@ -12,6 +12,7 @@ import { Unauthorized } from './pages/unauthorized/unauthorized';
 import { Notfound } from './pages/notfound/notfound';
 import { AuthGuard } from './services/auth/auth-guard';
 import { AuthPagesGuard } from './services/auth/auth-pages-guard';
+import { SubjectConfigurations } from './pages/subject-configurations/subject-configurations';
 
 export const routes: Routes = [
   {
@@ -49,6 +50,12 @@ export const routes: Routes = [
     path: 'dashboard',
     component: Dashboard,
     canActivate: [AuthGuard],
+    data: { expectedRole: 'Admin' }
+  },
+  {
+    path:'dashboard/Configurations',
+    component: SubjectConfigurations,
+     canActivate: [AuthGuard],
     data: { expectedRole: 'Admin' },
   },
   {

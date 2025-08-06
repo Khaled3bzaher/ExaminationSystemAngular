@@ -41,6 +41,7 @@ export class SignalRService {
     this.hubConnection.on(
       'ReceiveExamScore',
       (result: ExamEvaluatedResponse) => {
+        this.notificationService.notifyNewNotification.next(true);
         this.showStudentExamResult(result);
 
       }
@@ -48,13 +49,14 @@ export class SignalRService {
     this.hubConnection.on(
       'NewExamResultAvailable',
       (result: ExamEvaluatedResponse) => {
+        this.notificationService.notifyNewNotification.next(true);
         this.showAdminExamResult(result);
       }
     );
     this.hubConnection.on(
       'StudentStartedExam',
       (data: StartExamNotificationDTO) => {
-        
+        this.notificationService.notifyNewNotification.next(true);
         this.messageService.add({
           severity: 'info',
           summary: 'Student Started Exam',
@@ -66,7 +68,7 @@ export class SignalRService {
     );
   }
   private showStudentExamResult(result: ExamEvaluatedResponse): void {
-    this.notificationService.notifyNewNotification.next(true);
+    
     this.messageService.add({
       severity: result.examStatus === '1' ? 'error' : 'success',
       summary: 'Exam Result',
@@ -74,7 +76,6 @@ export class SignalRService {
     });
   }
   private showAdminExamResult(result: ExamEvaluatedResponse): void {
-    this.notificationService.notifyNewNotification.next(true);
     this.messageService.add({
       severity: 'info',
       summary: 'New Exam Result Available',

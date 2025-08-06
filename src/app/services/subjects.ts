@@ -4,6 +4,8 @@ import { PaginatedResponse } from "../Interfaces/PaginatedResponse";
 import { SubjectResponse } from "../Interfaces/SubjectResponse";
 import { ApiResponse } from "../Interfaces/APIResponse";
 import { SubjectDTO } from "../Interfaces/SubjectDTO";
+import { SubjectConfigurationDTO } from "../Interfaces/SubjectConfigurationDTO";
+import { SubjectConfigurationResponse } from "../Interfaces/SubjectConfigurationResponse";
 
 @Injectable({
   providedIn: 'root',
@@ -24,5 +26,12 @@ export class SubjectService {
   }
   createSubject(subjectData : SubjectDTO){
     return this.httpClient.post<ApiResponse<string>>(`Subjects`,subjectData);
+  }
+  editSubjectConfiguration(subjectId:string,configurationData:SubjectConfigurationDTO){
+      const params = new HttpParams().set('Id', subjectId);
+    return this.httpClient.put<ApiResponse<string>>(`Subjects/Configurations`, configurationData, { params });
+  }
+  getSubjectsConfigurations(params: HttpParams) {
+    return this.httpClient.get<ApiResponse<PaginatedResponse<SubjectConfigurationResponse>>>(`Subjects/Configurations`,{params});
   }
 }
