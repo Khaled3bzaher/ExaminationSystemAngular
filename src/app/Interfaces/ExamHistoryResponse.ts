@@ -5,4 +5,5 @@ export interface ExamHistoryResponse {
   subjectName: string;
   examDateTime: string;
   examStatus: string;
+  result:number;
 }

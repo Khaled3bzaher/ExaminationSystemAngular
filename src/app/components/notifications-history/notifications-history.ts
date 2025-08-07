@@ -68,11 +68,7 @@ export class NotificationsHistory {
 
           this.isLoading = false;
         }
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err.error.message,
-        });
+        
       },
     });
   }

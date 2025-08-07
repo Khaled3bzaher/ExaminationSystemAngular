@@ -59,6 +59,7 @@ export class Auth {
   }
   private readonly studentIdClaim = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
   private readonly roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
+  private readonly nameClaim = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
   getId(): string | null {
     const payload = this.getTokenPayload();
     return payload?.[this.studentIdClaim] ?? null;
@@ -70,6 +71,10 @@ export class Auth {
   getRole(): string | null {
   const payload = this.getTokenPayload();
   return payload?.[this.roleClaim] ?? null;
+}
+getUserName(): string {
+  const payload = this.getTokenPayload();
+  return payload?.[this.nameClaim] ?? null;
 }
 isAdmin(): boolean {
   return this.getRole() === 'Admin';

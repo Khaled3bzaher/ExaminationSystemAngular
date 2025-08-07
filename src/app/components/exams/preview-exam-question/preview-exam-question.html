@@ -1,0 +1,33 @@
+<div class="bg-white rounded-3xl shadow-xl p-8 space-y-6 border border-gray-200">
+  <!-- السؤال -->
+  <h3 class="text-2xl font-bold text-indigo-700 flex items-center gap-3">
+    <i class="pi pi-question-circle text-indigo-500 text-2xl"></i>
+    {{ question.text }}
+  </h3>
+
+  <div class="flex flex-col gap-4">
+    @for (c of question.choices; track c) {
+      <div
+        class="w-full px-6 py-4 text-left rounded-xl border flex items-center gap-3"
+        [ngClass]="{
+          'bg-green-100 border-green-400 text-green-800': question.selectedChoiceId === c.id && c.id === question.correctAnswerId,
+
+          'bg-red-100 border-red-400 text-red-800': question.selectedChoiceId === c.id && c.id !== question.correctAnswerId,
+
+          'bg-white text-gray-800 border-gray-300': question.selectedChoiceId !== c.id
+        }"
+      >
+        <i class="text-lg pi"
+           [ngClass]="{
+             'pi-check-circle text-green-500': question.selectedChoiceId === c.id && c.id === question.correctAnswerId,
+             'pi-times-circle text-red-500': question.selectedChoiceId === c.id && c.id !== question.correctAnswerId,
+             'pi-circle text-gray-500': question.selectedChoiceId !== c.id
+           }"></i>
+
+        <span class="flex-1 font-medium text-md">
+          {{ c.text }}
+        </span>
+      </div>
+    }
+  </div>
+</div>

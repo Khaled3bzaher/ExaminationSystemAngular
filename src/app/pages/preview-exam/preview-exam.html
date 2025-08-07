@@ -1,0 +1,54 @@
+<div class="p-20">
+  @if(isLoading){
+  <div class="card flex justify-center">
+    <p-progress-spinner
+      strokeWidth="8"
+      fill="transparent"
+      animationDuration=".5s"
+      [style]="{ width: '50px', height: '50px' }"
+    />
+  </div>
+  }@else { 
+<div class="p-6 space-y-6">
+  <div class="flex justify-between items-center bg-gray-100 p-4 rounded">
+    <span class="font-semibold text-indigo-600 text-lg">
+      Subject: {{ exam.subjectName }}
+    </span>
+    <span class="text-gray-500">Status: {{ exam.examStatus }} - Result: {{exam.result}}</span>
+    <span class="text-gray-500">Started At: {{ exam.createdAt | date:'short' }}</span>
+    <span class="text-gray-500">Submitted At: {{ exam.submittedAt | date:'short' }}</span>
+  </div>
+
+  <app-preview-exam-question
+    [question]="exam.questions[currentPage]">
+  </app-preview-exam-question>
+
+  <div class="flex justify-between items-center pt-4">
+    <p-button
+      label="Previous"
+      icon="pi pi-arrow-left"
+      (onClick)="currentPage=currentPage - 1"
+      [disabled]="currentPage === 0"
+      class="w-32"
+      severity="secondary"
+    ></p-button>
+
+    <span class="text-sm text-gray-500">
+      Question {{ currentPage + 1 }} of {{ exam.questions.length }}
+    </span>
+
+    <p-button
+      label="Next"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      (onClick)="currentPage=currentPage + 1"
+      [disabled]="currentPage === exam.questions.length - 1"
+      class="w-32"
+      severity="primary"
+    ></p-button>
+  </div>
+</div>
+
+
+  }
+</div>

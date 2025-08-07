@@ -13,6 +13,7 @@ import { Notfound } from './pages/notfound/notfound';
 import { AuthGuard } from './services/auth/auth-guard';
 import { AuthPagesGuard } from './services/auth/auth-pages-guard';
 import { SubjectConfigurations } from './pages/subject-configurations/subject-configurations';
+import { PreviewExam } from './pages/preview-exam/preview-exam';
 
 export const routes: Routes = [
   {
@@ -57,6 +58,10 @@ export const routes: Routes = [
     component: SubjectConfigurations,
      canActivate: [AuthGuard],
     data: { expectedRole: 'Admin' },
+  },
+  {
+    path:'preview/exams/:examId',
+    component: PreviewExam
   },
   {
     path: 'unauthorized',

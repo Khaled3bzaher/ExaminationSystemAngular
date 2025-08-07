@@ -1,6 +1,6 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { ProgressSpinner } from 'primeng/progressspinner';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth/auth';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
@@ -12,6 +12,8 @@ import { ExamService } from '../../services/ExamService';
 import { CommonModule } from '@angular/common';
 import { StudentExamDTO } from '../../Interfaces/StudentExamDTO';
 import { ExamQuestionDTO } from '../../Interfaces/ExamQuestionDTO';
+import { ProgressBarModule } from 'primeng/progressbar';
+
 
 @Component({
   selector: 'app-student-exams',
@@ -19,9 +21,11 @@ import { ExamQuestionDTO } from '../../Interfaces/ExamQuestionDTO';
     ProgressSpinner,
     Toast,
     ExamInstruction,
+    ProgressBarModule,
     Button,
     ExamQuestion,
     CommonModule,
+    RouterLink
   ],
   templateUrl: './student-exams.html',
   styleUrl: './student-exams.css',
@@ -90,6 +94,8 @@ export class StudentExams implements OnInit {
       },
     });
   }
+  progressValue: number = 100;
+  totalExamTimeInMs!: number;
 
   startExam() {
     this.examStarted = true;
@@ -97,11 +103,14 @@ export class StudentExams implements OnInit {
     const endTime = new Date(
       now.getTime() + this.exam.durationInMinutes * 60000
     );
+        this.totalExamTimeInMs = endTime.getTime() - now.getTime();
+
     localStorage.setItem('examStartTime', now.toISOString());
     const questionIds = this.exam.questions.map((q) => q.id);
     localStorage.setItem('examQuestionIds', JSON.stringify(questionIds));
 
     this.startTimer(endTime);
+
   }
   startTimer(end: Date) {
     this.timer = setInterval(() => {
@@ -114,6 +123,8 @@ export class StudentExams implements OnInit {
         const mins = Math.floor(diff / 60000);
         const secs = Math.floor((diff % 60000) / 1000);
         this.timeLeft = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        this.progressValue = (diff / this.totalExamTimeInMs) * 100;
+
       }
     }, 1000);
   }
@@ -132,7 +143,6 @@ export class StudentExams implements OnInit {
     }));
 
     const payload: StudentExamDTO = {
-      submittedAt: new Date().toISOString(),
       examId: this.exam.examId,
       questions: fullAnswerList,
     };

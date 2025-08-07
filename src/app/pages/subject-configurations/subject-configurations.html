@@ -1,191 +1,188 @@
-
-<div class="p-20">
-@if(isLoading){
-<div class="card flex justify-center">
-  <p-progress-spinner
-    strokeWidth="8"
-    fill="transparent"
-    animationDuration=".5s"
-    [style]="{ width: '50px', height: '50px' }"
-  />
-</div>
-}@else {
-  <p-table
-    #dt
-    class="shadow rounded-lg overflow-hidden border border-gray-200"
-    [value]="subjectConfigurations()"
-    [rows]="pageSize"
-    [lazy]="true"
-    (onLazyLoad)="onLazyChange($event)"
-    [totalRecords]="totalCount()"
-    [paginator]="true"
-    [rowHover]="true"
-    dataKey="id"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [showCurrentPageReport]="true"
-    [tableStyle]="{ 'min-width': '75rem' }"
-  >
-    <ng-template #caption>
-      <div
-        class="flex justify-between items-center px-4 py-3 bg-gray-50 border-b border-gray-200"
-      >
-        <h5 class="text-lg font-semibold text-gray-700 m-0">
-          Manage Configurations
-        </h5>
-        <p-iconfield>
-          <p-inputicon class="pi pi-search" />
-          <input
-            pInputText
-            type="text"
-            (input)="inputSearch($event)"
-            placeholder="Search..."
-            class="rounded-md border-gray-300 shadow-sm"
-          />
-        </p-iconfield>
-      </div>
-    </ng-template>
-
-    <ng-template #header>
-      <tr class="bg-gray-100 text-gray-700">
-        <th pSortableColumn="Name" class="px-4 py-2">
-            <div class="flex items-center gap-2">
-            Subject Name
-            <p-sortIcon field="Name" />
-          </div>
-        </th>
-        <th pSortableColumn="numberOfQuestions" class="px-4 py-2">
-            <div class="flex items-center gap-2">
-            Questions Number
-            <p-sortIcon field="numberOfQuestions" />
-          </div>
-        </th>
-        <th pSortableColumn="Duration" class="px-4 py-2">
-            <div class="flex items-center gap-2">
-            Duration In Minutes
-            <p-sortIcon field="Duration" />
-          </div>
-        </th>
-        <th pSortableColumn="lowPercentage" class="px-4 py-2">
-            <div class="flex items-center gap-2">
-            Low Percentage
-            <p-sortIcon field="lowPercentage" />
-          </div>
-        </th>
-        <th pSortableColumn="normalPercentage" class="px-4 py-2">
-            <div class="flex items-center gap-2">
-            Normal Percentage
-            <p-sortIcon field="normalPercentage" />
-          </div>
-        </th>
-        <th pSortableColumn="hardPercentage" class="px-4 py-2">
-            <div class="flex items-center gap-2">
-            Hard Percentage
-            <p-sortIcon field="hardPercentage" />
-          </div>
-        </th>
-        <th class="px-4 py-2"></th>
-      </tr>
-    </ng-template>
-
-    <ng-template #body let-configuration>
-      <tr class="hover:bg-gray-50 transition">
-        <td class="px-4 py-3">{{ configuration.subjectName }}</td>
-        <td class="px-4 py-3">{{ configuration.questionNumbers }}</td>
-        <td class="px-4 py-3">{{ configuration.durationInMinutes }}</td>
-        <td class="px-4 py-3">{{ configuration.lowPercentage }}</td>
-        <td class="px-4 py-3">{{ configuration.normalPercentage }}</td>
-        <td class="px-4 py-3">{{ configuration.hardPercentage }}</td>
-        <td class="px-4 py-3 flex gap-2">
-          <p-button
-            icon="pi pi-pencil"
-            class="text-indigo-600 hover:text-indigo-800"
-            [rounded]="true"
-            [outlined]="true"
-            (click)="editConfiguration(configuration)"
-          />
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-  <p-dialog
-  [(visible)]="subjectDialog"
-  [style]="{ width: '600px' }"
-  header="Edit Configuration for {{ editedConfiguration.subjectName }}"
-  [modal]="true"
-  class="rounded-lg"
->
-  <ng-template #content>
-    <div class="flex flex-col gap-6">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Questions Number
-        </label>
-        <input
-          type="number"
-          pInputText
-          [(ngModel)]="editedConfiguration.questionNumbers"
-          class="w-full rounded-md border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Duration In Minutes
-        </label>
-        <input
-          type="number"
-          pInputText
-          [(ngModel)]="editedConfiguration.durationInMinutes"
-          class="w-full rounded-md border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div class="grid grid-cols-3 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Low %
-          </label>
-          <input
-            type="number"
-            pInputText
-            [(ngModel)]="editedConfiguration.lowPercentage"
-            class="w-full rounded-md border-gray-300 shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Normal %
-          </label>
-          <input
-            type="number"
-            pInputText
-            [(ngModel)]="editedConfiguration.normalPercentage"
-            class="w-full rounded-md border-gray-300 shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Hard %
-          </label>
-          <input
-            type="number"
-            pInputText
-            [(ngModel)]="editedConfiguration.hardPercentage"
-            class="w-full rounded-md border-gray-300 shadow-sm"
-          />
-        </div>
-      </div>
+<div class="p-6 sm:p-10 md:p-20 space-y-6">
+  @if (isLoading) {
+    <div class="flex justify-center items-center min-h-[400px]">
+      <p-progress-spinner
+        strokeWidth="8"
+        fill="transparent"
+        animationDuration=".5s"
+        [style]="{ width: '60px', height: '60px' }"
+      />
     </div>
-  </ng-template>
+  } @else {
+    <p-table
+      #dt
+      class="shadow rounded-xl overflow-hidden border border-gray-200"
+      [value]="subjectConfigurations()"
+      [rows]="pageSize"
+      [lazy]="true"
+      (onLazyLoad)="onLazyChange($event)"
+      [totalRecords]="totalCount()"
+      [paginator]="true"
+      [rowHover]="true"
+      dataKey="id"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [showCurrentPageReport]="true"
+      [tableStyle]="{ 'min-width': '75rem' }"
+    >
+      <ng-template #caption>
+        <div class="flex justify-between items-center px-6 py-4 bg-gray-50 border-b border-gray-200">
+          <h5 class="text-xl font-semibold text-gray-700 m-0">
+            Manage Configurations
+          </h5>
+          <p-iconfield class="w-72">
+            <p-inputicon class="pi pi-search" />
+            <input
+              pInputText
+              type="text"
+              (input)="inputSearch($event)"
+              placeholder="Search..."
+              class="w-full rounded-md border border-gray-300 shadow-sm px-3 py-2"
+            />
+          </p-iconfield>
+        </div>
+      </ng-template>
 
-  <ng-template #footer>
-    <div class="flex justify-end gap-3">
-      <p-button label="Cancel" icon="pi pi-times" text (click)="subjectDialog = false" />
-      <p-button label="Save" icon="pi pi-check" (click)="saveConfiguration()" />
-    </div>
-  </ng-template>
-</p-dialog>
-}
+      <ng-template #header>
+        <tr class="bg-gray-100 text-gray-700 text-sm">
+          <th pSortableColumn="Name" class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              Subject Name
+              <p-sortIcon field="Name" />
+            </div>
+          </th>
+          <th pSortableColumn="numberOfQuestions" class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              Questions Number
+              <p-sortIcon field="numberOfQuestions" />
+            </div>
+          </th>
+          <th pSortableColumn="Duration" class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              Duration In Minutes
+              <p-sortIcon field="Duration" />
+            </div>
+          </th>
+          <th pSortableColumn="lowPercentage" class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              Low Percentage
+              <p-sortIcon field="lowPercentage" />
+            </div>
+          </th>
+          <th pSortableColumn="normalPercentage" class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              Normal Percentage
+              <p-sortIcon field="normalPercentage" />
+            </div>
+          </th>
+          <th pSortableColumn="hardPercentage" class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              Hard Percentage
+              <p-sortIcon field="hardPercentage" />
+            </div>
+          </th>
+          <th class="px-4 py-3 w-20"></th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-configuration>
+        <tr class="hover:bg-gray-50 transition text-sm">
+          <td class="px-4 py-3">{{ configuration.subjectName }}</td>
+          <td class="px-4 py-3">{{ configuration.questionNumbers }}</td>
+          <td class="px-4 py-3">{{ configuration.durationInMinutes }}</td>
+          <td class="px-4 py-3">{{ configuration.lowPercentage }}</td>
+          <td class="px-4 py-3">{{ configuration.normalPercentage }}</td>
+          <td class="px-4 py-3">{{ configuration.hardPercentage }}</td>
+          <td class="px-4 py-3">
+            <p-button
+              icon="pi pi-pencil"
+              class="text-indigo-600 hover:text-indigo-800"
+              [rounded]="true"
+              (click)="editConfiguration(configuration)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <p-dialog
+      [(visible)]="subjectDialog"
+      [style]="{ width: '600px' }"
+      header="Edit Configuration for {{ editedConfiguration.subjectName }}"
+      [modal]="true"
+      class="rounded-lg"
+    >
+      <ng-template #content>
+        <div class="flex flex-col gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Questions Number
+            </label>
+            <input
+              type="number"
+              pInputText
+              [(ngModel)]="editedConfiguration.questionNumbers"
+              class="w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Duration In Minutes
+            </label>
+            <input
+              type="number"
+              pInputText
+              [(ngModel)]="editedConfiguration.durationInMinutes"
+              class="w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Low %
+              </label>
+              <input
+                type="number"
+                pInputText
+                [(ngModel)]="editedConfiguration.lowPercentage"
+                class="w-full rounded-md border-gray-300 shadow-sm"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Normal %
+              </label>
+              <input
+                type="number"
+                pInputText
+                [(ngModel)]="editedConfiguration.normalPercentage"
+                class="w-full rounded-md border-gray-300 shadow-sm"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Hard %
+              </label>
+              <input
+                type="number"
+                pInputText
+                [(ngModel)]="editedConfiguration.hardPercentage"
+                class="w-full rounded-md border-gray-300 shadow-sm"
+              />
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template #footer>
+        <div class="flex justify-end gap-3 mt-4">
+          <p-button label="Cancel" icon="pi pi-times" text (click)="subjectDialog = false" />
+          <p-button label="Save" icon="pi pi-check" (click)="saveConfiguration()" />
+        </div>
+      </ng-template>
+    </p-dialog>
+  }
 </div>

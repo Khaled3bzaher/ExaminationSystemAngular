@@ -1,18 +1,41 @@
-<div class="bg-white rounded-xl shadow-lg p-6 space-y-6">
-  <h3 class="text-xl font-semibold text-gray-800">{{ question.text }}</h3>
+<div class="bg-white rounded-3xl shadow-xl p-8 space-y-6 border border-gray-200">
+  <!-- السؤال -->
+  <h3 class="text-2xl font-bold text-indigo-700 flex items-center gap-3">
+    <i class="pi pi-question-circle text-indigo-500 text-2xl"></i>
+    {{ question.text }}
+  </h3>
 
+  <!-- الاختيارات -->
   <div class="flex flex-col gap-4">
     @for (c of question.choices; track c) {
       <button
         type="button"
         (click)="selectChoice(c.id)"
-        class="w-full px-6 py-4 text-left rounded-lg border transition-all duration-200
-              hover:bg-indigo-50 hover:border-indigo-400 text-gray-800"
+        class="w-full px-6 py-4 text-left rounded-xl border 
+               transition-all duration-200 flex items-center gap-3
+               hover:bg-indigo-50 hover:border-indigo-400"
         [ngClass]="{
-          'bg-indigo-600 text-white border-indigo-600': selectedChoiceId === c.id
+          'bg-indigo-600 text-white border-indigo-600 shadow-md': selectedChoiceId === c.id,
+          'bg-white text-gray-800 border-gray-300': selectedChoiceId !== c.id
         }"
       >
-        {{ c.text }}
+        <i 
+          class="text-lg pi"
+          [ngClass]="{
+            'pi-check-circle text-white': selectedChoiceId === c.id,
+            'pi-circle text-indigo-500': selectedChoiceId !== c.id
+          }"
+        ></i>
+
+        <span 
+          class="flex-1 font-medium text-md"
+          [ngClass]="{
+            'text-white': selectedChoiceId === c.id,
+            'text-gray-800': selectedChoiceId !== c.id
+          }"
+        >
+          {{ c.text }}
+        </span>
       </button>
     }
   </div>

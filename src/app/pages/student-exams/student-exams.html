@@ -15,7 +15,7 @@
 <div class="p-20">
   @if(!examStarted && !examSubmitted){
   <div class="p-6 space-y-6">
-    <app-exam-instruction (accepted)="startExam()" [durationInMinutes]="60"></app-exam-instruction>
+    <app-exam-instruction (accepted)="startExam()" [durationInMinutes]="exam.durationInMinutes" [examName]="exam.subjectName"></app-exam-instruction>
   </div>
   } @if(examStarted && !examSubmitted){
   <div class="space-y-6">
@@ -25,7 +25,6 @@
       <span class="text-lg font-bold text-indigo-700"
         >Remaining Time: {{ timeLeft }}</span
       >
-    
 
 
       <p-button
@@ -35,6 +34,8 @@
         (onClick)="submitExam()"
       />
     </div>
+
+        <p-progressbar [value]="progressValue"   showValue="false" />
 
     <app-exam-question
       [question]="exam.questions[currentPage]"
@@ -56,7 +57,6 @@
     Question {{ currentPage + 1 }} of {{ exam.questions.length }}
   </span>
 
-  <!-- إذا كنت في آخر سؤال، أظهر زر "إنهاء" بدلاً من "Next" -->
   @if(currentPage === exam.questions.length - 1) {
     <p-button
       label="Finish Exam"
@@ -77,21 +77,31 @@
   }
 </div>
     <div class="flex flex-wrap gap-2 justify-center pt-6">
+      @for (q of exam.questions; track $index) {
       <p-button
-        *ngFor="let q of exam.questions; let i = index"
-        [label]="isAnswered(q.id) ? (i + 1).toString() + '- Answerd' : (i + 1).toString() + '- Draft'"
+        [label]="isAnswered(q.id) ? ($index + 1).toString() + '- Answerd' : ($index + 1).toString() + '- Draft'"
         [severity]="isAnswered(q.id) ? 'success' : 'secondary'"
-        (onClick)="goToPage(i)"
+        (onClick)="goToPage($index)"
         size="small"
       >
       </p-button>
+    }
     </div>
   </div>
 
-  } @if(examSubmitted){
-  <div class="text-center text-green-600 font-bold text-xl">
-    Exam submitted successfully!
-  </div>
-  }
+  } @if(examSubmitted) {
+    <div class="bg-white rounded-3xl shadow-xl border border-green-200 p-8 text-center">
+      <i class="pi pi-check-circle text-green-500 text-6xl mb-4"></i>
+      <h3 class="text-2xl font-bold text-green-700 mb-2">Exam Submitted Successfully!</h3>
+      <p class="text-gray-600 mb-6">Your answers have been recorded.</p>
+      <p-button
+        label="Back to Exams"
+        icon="pi pi-history"
+        severity="success"
+        routerLink="/exams"
+        class="px-6"
+      ></p-button>
+    </div>
+    }
 </div>
 }

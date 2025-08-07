@@ -1,16 +1,41 @@
-<div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-  <h2 class="text-2xl font-semibold mb-4 text-indigo-700">📋 Exam Instructions</h2>
-  <ul class="list-disc list-inside text-gray-700 space-y-2">
-    <li>Read all questions carefully.</li>
-    <li>You can't go back after submitting.</li>
-    <li>Answer all questions before time ends.</li>
-  </ul>
-
-  <div class="mt-4 text-sm text-gray-600">
-    <p><strong>Duration:</strong> {{ durationInMinutes }} minutes</p>
+<div class="bg-gradient-to-br from-white to-slate-50 p-8 rounded-3xl shadow-xl border border-gray-200 max-w-2xl mx-auto">
+  <!-- Title -->
+  <div class="flex items-center gap-3 mb-6">
+    <i class="pi pi-info-circle text-indigo-600 text-3xl"></i>
+    <h2 class="text-3xl font-bold text-indigo-700">Exam Instructions - {{examName}}</h2>
   </div>
 
-  <div class="mt-6 text-end">
-    <p-button type="button" label="Start Exam" icon="pi pi-check" severity="danger" (click)="onAccept()"></p-button>
+  <!-- Instructions -->
+  <ul class="space-y-4 text-gray-800 text-[1rem]">
+    <li class="flex items-start gap-3">
+      <i class="pi pi-search text-indigo-500 mt-1"></i>
+      <span>Read all questions carefully before answering.</span>
+    </li>
+    <li class="flex items-start gap-3">
+      <i class="pi pi-ban text-red-500 mt-1"></i>
+      <span>You <strong>can’t go back</strong> after submitting your answers.</span>
+    </li>
+    <li class="flex items-start gap-3">
+      <i class="pi pi-clock text-yellow-500 mt-1"></i>
+      <span>Ensure you answer all questions <strong>before the time ends</strong>.</span>
+    </li>
+  </ul>
+
+  <!-- Duration -->
+  <div class="mt-6 text-sm text-gray-600 bg-gray-100 rounded-xl p-4 flex items-center gap-2">
+    <i class="pi pi-hourglass text-indigo-600"></i>
+    <span><strong>Duration:</strong> {{ durationInMinutes }} minutes</span>
+  </div>
+
+  <!-- Start Button -->
+  <div class="mt-8 text-end">
+    <p-button
+      type="button"
+      label="Start Exam"
+      icon="pi pi-play"
+      severity="danger"
+      class="px-5 py-3 text-md font-medium"
+      (click)="onAccept()"
+    ></p-button>
   </div>
 </div>

@@ -31,7 +31,6 @@ import { Auth } from '../../../services/auth/auth';
 export class Examshistory {
   examsHistory = signal<ExamHistoryResponse[]>([]);
   selectedExam: ExamHistoryResponse | null = null;
-  @Output() onSelectExam = new EventEmitter<ExamHistoryResponse>();
   isLoading = true;
   private examService = inject(ExamService);
   private authService = inject(Auth);
@@ -93,14 +92,8 @@ export class Examshistory {
   }
   onRowSelect(event: any) {
     this.selectedExam = event.data;
-    if (this.selectedExam) {
-      this.messageService.add({
-        severity: this.selectedExam.examStatus === 'Completed' ? 'success' : 'warn',
-        summary: 'Exam History',
-        detail: 'Exam Status: ' + this.selectedExam.examStatus,
-      });
-      this.onSelectExam.emit(this.selectedExam);
-    }
+    this.router.navigate(['/preview','exams', this.selectedExam!.id], {
+    });
   }
   onPageChange(event: PaginatorState) {
     this.pageIndex = event.page ?? 0;

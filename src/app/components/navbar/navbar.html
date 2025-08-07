@@ -1,8 +1,8 @@
-<app-sider [(visible)]="isSiderVisible"></app-sider>
-<nav class="bg-white shadow-md">
+
+<nav>
   <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
     <!-- Logo + Site Name -->
-    <div class="flex items-center gap-2 cursor-pointer" (click)="toggleSider()">
+    <div class="flex items-center gap-2 cursor-pointer" routerLink="/home">
       <span class="text-2xl font-bold text-gray-900">Exams System</span>
     </div>
 
@@ -12,8 +12,8 @@
         <a
           routerLink="/home"
           routerLinkActive="text-blue-600"
-          class="hover:text-blue-600"
-          >Home</a
+          class="hover:text-blue-600 "
+          ><span class="pi pi-home"></span> Home</a
         >
       </li>
       @if(isAdmin){
@@ -22,7 +22,7 @@
           routerLink="/dashboard"
           routerLinkActive="text-blue-600"
           class="hover:text-blue-600"
-          >Dashboard</a
+          ><span class="pi pi-cog"></span> Dashboard</a
         >
       </li>
       <li>
@@ -30,7 +30,7 @@
           routerLink="/dashboard/Configurations"
           routerLinkActive="text-blue-600"
           class="hover:text-blue-600"
-          >Configurations</a
+          ><span class="pi pi-key"></span> Configurations</a
         >
       </li>
       <li>
@@ -38,7 +38,7 @@
           routerLink="/students"
           routerLinkActive="text-blue-600"
           class="hover:text-blue-600"
-          >Students</a
+          ><span class="pi pi-users"></span> Students</a
         >
       </li>
       }
@@ -47,7 +47,7 @@
           routerLink="/subjects"
           routerLinkActive="text-blue-600"
           class="hover:text-blue-600"
-          >Subjects</a
+          ><span class="pi pi-graduation-cap"></span> Subjects</a
         >
       </li>
       <li>
@@ -55,7 +55,7 @@
           routerLink="/exams"
           routerLinkActive="text-blue-600"
           class="hover:text-blue-600"
-          >Exams</a
+          ><span class="pi pi-history"></span> Exams</a
         >
       </li>
     </ul>
@@ -78,24 +78,22 @@
     </div>
     }@else {
     <div class="hidden md:flex gap-4 items-center">
-      <p-overlaybadge [value]="notificationCount" (click)="op.toggle($event)">
-    <i class="pi pi-bell cursor-pointer" style="font-size: 2rem"></i>
+      <p-overlaybadge severity="info" [value]="notificationCount" (click)="op.toggle($event)">
 </p-overlaybadge>
     <p-popover #op>
-        <div class="flex flex-col gap-4 w-[35rem]">
+        <div class="flex flex-col gap-4 ">
             <div>
-                
                 <span class="font-medium text-surface-900 dark:text-surface-0 block mb-2">Notifications</span>
                 <app-notifications-history (notificationCount)="onNotificationCountChanged($event)"></app-notifications-history>
             </div>
         </div>
     </p-popover>
-      <a
-        (click)="OnLogout()"
-        class="px-4 py-2 bg-red-600 cursor-pointer text-white rounded hover:bg-red-700 transition"
-      >
-        Logout
-      </a>
+     <a
+          (click)="OnLogout()"
+          class="hover:text-blue-600 cursor-pointer text-gray-700 font-medium"
+          ><span class="pi pi-users"></span> {{ userName}}</a
+        >
+      
     </div>
     }
 

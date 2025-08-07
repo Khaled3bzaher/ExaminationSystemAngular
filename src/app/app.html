@@ -1,6 +1,13 @@
-<app-navbar/>
-<p-toast
-  [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"
-/>
-<router-outlet />
-<app-footer/>
+<div class="min-h-screen flex flex-col">
+  <app-navbar />
+
+  <p-toast
+    [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"
+  />
+
+  <main class="flex-grow">
+    <router-outlet />
+  </main>
+
+  <app-footer />
+</div>

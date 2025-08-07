@@ -1,4 +1,4 @@
 export interface ExamQuestionChoiceResponse{
-     id: string,
+     id: number,
   text: string
 }

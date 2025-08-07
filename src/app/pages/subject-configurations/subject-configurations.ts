@@ -109,6 +109,15 @@ saveConfiguration() {
     });
     return;
   }
+
+  if (!this.editedConfiguration.durationInMinutes || !this.editedConfiguration.questionNumbers) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Validation Error',
+      detail: 'Fields cannot be empty',
+    });
+    return;
+  }
   const configurationData : SubjectConfigurationDTO = {
     lowPercentage: this.editedConfiguration.lowPercentage,
     normalPercentage: this.editedConfiguration.normalPercentage,

@@ -72,6 +72,7 @@
         <th>Subject</th>
         <th>Exam Date</th>
         <th>Exam Status</th>
+        <th>Result</th>
       </tr>
     </ng-template>
     <ng-template #body let-examHistory>
@@ -90,6 +91,7 @@
         <td>{{examHistory.subjectName}}</td>
         <td>{{examHistory.examDateTime | date:'medium'}}</td>
         <td>{{examHistory.examStatus}}</td>
+        <td>{{examHistory.result}}</td>
       </tr>
     </ng-template>
   </p-table>

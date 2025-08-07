@@ -28,6 +28,7 @@ import { Auth } from '../../services/auth/auth';
   selector: 'app-subjects',
   imports: [
     CommonModule,
+    
     FormsModule,
     CardModule,
     ButtonModule,
@@ -45,12 +46,16 @@ import { Auth } from '../../services/auth/auth';
 })
 export class Subjects {
   private router = inject(Router);
-  authService = inject(Auth);
+  private authService = inject(Auth);
+  isAdmin = false;
   constructor(
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {
     this.authService.isAuthenticated().subscribe((isAuth) => {
+      if(this.authService.isAdmin()) {
+        this.isAdmin = true;
+      }
       if (!isAuth) {
         this.router.navigate(['/login']);
       }
@@ -256,8 +261,6 @@ export class Subjects {
     });
   }
   requestExam(subject: SubjectResponse) {
-    this.router.navigate(['/exams', subject.id], {
-      queryParams: { subjectName: subject.name },
-    });
+    this.router.navigate(['/exams', subject.id]);
   }
 }

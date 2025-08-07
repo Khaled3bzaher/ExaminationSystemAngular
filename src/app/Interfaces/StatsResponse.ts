@@ -1,6 +1,6 @@
 export interface StatsResponse {
   studentsNumber: number;
-  examCompleted: number;
+  examNotCompleted: number;
   examPassed: number;
   examFailed: number;
 }

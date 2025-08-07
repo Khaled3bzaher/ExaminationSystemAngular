@@ -3,10 +3,17 @@
 />
 <div class="p-8 lg:p-20 space-y-10 bg-gray-50 min-h-screen">
   <header class="mb-8 justify-items-center">
-    <h1 class="text-3xl font-extrabold text-indigo-700">Subject Management</h1>
+    @if(isAdmin){
+    <h1 class="text-4xl font-extrabold text-blue-500">Subject Management</h1>
     <p class="mt-2 text-gray-600 text-sm">
       Search, sort and manage your subjects easily
     </p>
+  }@else {
+    <h1 class="text-4xl font-extrabold text-blue-500">Subjects</h1>
+    <p class="mt-2 text-gray-600 text-sm">
+      Explore the subjects available for exams
+    </p>
+  }
   </header>
   @if(isLoading){
   <div class="card flex justify-center">
@@ -63,7 +70,7 @@
         </ng-template>
       </p-autoComplete>
     </div>
-    @if(authService.isAdmin()){
+    @if(isAdmin){
     <div class="flex items-end">
       <p-button
         icon="pi pi-plus"
@@ -86,8 +93,8 @@
   </p-confirmdialog>
   <!-- 📦 Subject Cards -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    @for(subject of subjects(); track subject.id) {
     <p-card
-      *ngFor="let subject of subjects()"
       [style]="{ width: '100%', maxWidth: '25rem', overflow: 'hidden' }"
       class="shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-transform duration-300 rounded-lg"
     >
@@ -100,7 +107,7 @@
         />
       </ng-template>
       <ng-template #title>
-        <h3 class="text-lg font-semibold text-gray-900">{{ subject.name }}</h3>
+        <h3 class="text-lg font-semibold text-blue-500">{{ subject.name }}</h3>
       </ng-template>
       <ng-template #subtitle>
         <p class="text-sm text-gray-500">Subject Card of {{ subject.name }}</p>
@@ -113,7 +120,7 @@
       </p>
       <ng-template #footer>
         <div class="flex gap-4 mt-6">
-          @if(authService.isAdmin()){
+          @if(isAdmin){
           <p-button
             label="Delete"
             (click)="confirmDelete(subject.id)"
@@ -141,6 +148,7 @@
         </div>
       </ng-template>
     </p-card>
+  }
   </div>
 
   <p-dialog

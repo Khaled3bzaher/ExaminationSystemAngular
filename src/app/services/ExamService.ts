@@ -5,6 +5,7 @@ import { StudentExamResponse } from '../Interfaces/StudentExamResponse';
 import { StudentExamDTO } from '../Interfaces/StudentExamDTO';
 import { PaginatedResponse } from '../Interfaces/PaginatedResponse';
 import { ExamHistoryResponse } from '../Interfaces/ExamHistoryResponse';
+import { PreviewExamResponse } from '../Interfaces/PreviewExamResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +24,8 @@ export class ExamService {
   }
   examsHistory(params:HttpParams){
     return this.http.get<ApiResponse<PaginatedResponse<ExamHistoryResponse>>>('Exams/ExamsHistory',{params});
+  }
+  examPreview(examId:string){
+    return this.http.get<ApiResponse<PreviewExamResponse>>(`Exams/ExamPreview`,{params: new HttpParams().set('examId', examId)});
   }
 }
