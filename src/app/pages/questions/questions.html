@@ -1,4 +1,14 @@
 <div class="p-20">
+  @if(isLoading){
+<div class="card flex justify-center">
+  <p-progress-spinner
+    strokeWidth="8"
+    fill="transparent"
+    animationDuration=".5s"
+    [style]="{ width: '50px', height: '50px' }"
+  />
+</div>
+}@else {
   <header class="mb-8 justify-items-center">
     <h1 class="text-3xl font-extrabold text-indigo-700">
       Questions Management
@@ -32,7 +42,7 @@
 
   <p-table
     #dt
-    class="shadow rounded-lg overflow-hidden border border-gray-200"
+    class=" overflow-hidden"
     [value]="subjectQuestions()"
     [rows]="pageSize"
     [lazy]="true"
@@ -87,13 +97,7 @@
         <td class="px-4 py-3">{{ getCorrectAnswerText(question) }}</td>
         <td class="px-4 py-3">{{ question.questionLevel }}</td>
         <td class="px-4 py-3 flex gap-2">
-          <p-button
-            icon="pi pi-pencil"
-            class="text-indigo-600 hover:text-indigo-800"
-            [rounded]="true"
-            [outlined]="true"
-            (click)="editQuestion(question)"
-          />
+          
           <p-button
             icon="pi pi-trash"
             severity="danger"
@@ -108,7 +112,7 @@
 
   <p-dialog
     [(visible)]="questionDialog"
-    [style]="{ width: '500px' }"
+    [style]="{ width: '700px' }"
     header="Create Question for {{subjectName}}"
     [modal]="true"
     class="rounded-lg"
@@ -218,4 +222,5 @@
   </p-dialog>
 
   <p-confirmDialog [style]="{ width: '450px' }" class="rounded-md" />
+}
 </div>

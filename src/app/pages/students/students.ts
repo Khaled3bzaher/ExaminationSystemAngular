@@ -31,14 +31,14 @@ import { Router } from '@angular/router';
   styleUrl: './students.css',
 })
 export class Students {
-  constructor(private router:Router,private messageService: MessageService) {}
+  constructor(private router: Router, private messageService: MessageService) {}
 
   isLoading = true;
   private studentsService = inject(StudentsService);
   pageSize = 5;
   pageIndex = 0;
   search = '';
-  sorting = 'NameAsc';
+  sorting = { label: 'Student Name (A-Z)', value: 'NameAsc' };
   totalCount = signal(0);
   students = signal<StudentResponse[]>([]);
   selectedStudent: StudentResponse | null = null;
@@ -47,7 +47,7 @@ export class Students {
   }
   loadStudents() {
     const params = new HttpParams()
-      .set('sorting', this.sorting)
+      .set('sorting', this.sorting.value)
       .set('PageIndex', this.pageIndex + 1)
       .set('PageSize', this.pageSize)
       .set('search', this.search);
@@ -83,23 +83,17 @@ export class Students {
     { label: 'Disabled', value: 'ActiveAsc' },
     { label: 'Enabled', value: 'ActiveDesc' },
   ];
-  filteredSortingOptions: any[] = [];
+  filteredSortingOptions: any[] = [...this.sortingOptions];
 
   // Method to filter options
   filterSorting(event: any) {
-    let filtered: any[] = [];
-    let query = event.query;
-
-    for (let option of this.sortingOptions) {
-      if (option.label.toLowerCase().includes(query.toLowerCase())) {
-        filtered.push(option);
-      }
-    }
-
-    this.filteredSortingOptions = filtered;
+    const query = event.query.toLowerCase();
+    this.filteredSortingOptions = this.sortingOptions.filter((option) =>
+      option.label.toLowerCase().includes(query)
+    );
   }
   onSortChange(event: any) {
-    console.log('Selected sorting:', event.value);
+    this.sorting = event.value;
     this.pageIndex = 0;
     this.loadStudents();
   }

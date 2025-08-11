@@ -124,7 +124,7 @@ export class Subjects {
   pageSize = 5;
   pageIndex = 0;
   search = '';
-  sorting = 'NameAsc';
+  sorting = { label: 'Name (A-Z)', value: 'NameAsc' };
 
   sortingOptions = [
     { label: 'Name (A-Z)', value: 'NameAsc' },
@@ -132,20 +132,13 @@ export class Subjects {
     { label: 'Created At (Oldest)', value: 'CreatedAtAsc' },
     { label: 'Created At (Newest)', value: 'CreatedAtDesc' },
   ];
-  filteredSortingOptions: any[] = [];
+  filteredSortingOptions: any[] = [...this.sortingOptions];
 
-  // Method to filter options
   filterSorting(event: any) {
-    let filtered: any[] = [];
-    let query = event.query;
-
-    for (let option of this.sortingOptions) {
-      if (option.label.toLowerCase().includes(query.toLowerCase())) {
-        filtered.push(option);
-      }
-    }
-
-    this.filteredSortingOptions = filtered;
+    const query = event.query.toLowerCase();
+  this.filteredSortingOptions = this.sortingOptions.filter(option =>
+    option.label.toLowerCase().includes(query)
+  );
   }
   ngOnInit() {
     this.isLoading = true;
@@ -157,7 +150,7 @@ export class Subjects {
       .set('pageIndex', this.pageIndex + 1)
       .set('pageSize', this.pageSize)
       .set('search', this.search)
-      .set('sorting', this.sorting);
+      .set('sorting', this.sorting.value);
 
     this.subjectService.getAllSubject(params).subscribe({
       next: (res) => {
@@ -187,7 +180,7 @@ export class Subjects {
   }
 
   onSortChange(event: any) {
-    console.log('Selected sorting:', event.value);
+    this.sorting = event.value;
     this.pageIndex = 0;
     this.loadSubjects();
   }
@@ -261,6 +254,8 @@ export class Subjects {
     });
   }
   requestExam(subject: SubjectResponse) {
-    this.router.navigate(['/exams', subject.id]);
+    this.router.navigate(['/exams', subject.id],{
+      queryParams: { subjectName: subject.name },
+    });
   }
 }

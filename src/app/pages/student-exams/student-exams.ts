@@ -2,7 +2,7 @@ import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth/auth';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { ExamInstruction } from '../../components/exams/exam-instruction/exam-instruction';
 import { StudentExamResponse } from '../../Interfaces/StudentExamResponse';
@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { StudentExamDTO } from '../../Interfaces/StudentExamDTO';
 import { ExamQuestionDTO } from '../../Interfaces/ExamQuestionDTO';
 import { ProgressBarModule } from 'primeng/progressbar';
-
+import { ConfirmDialog } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-student-exams',
@@ -25,7 +25,8 @@ import { ProgressBarModule } from 'primeng/progressbar';
     Button,
     ExamQuestion,
     CommonModule,
-    RouterLink
+    RouterLink,
+    ConfirmDialog
   ],
   templateUrl: './student-exams.html',
   styleUrl: './student-exams.css',
@@ -36,7 +37,7 @@ export class StudentExams implements OnInit {
   isLoading = true;
   subjectId!: string;
   subjectName!: string;
-
+  private confirmationService = inject(ConfirmationService);
   private route = inject(ActivatedRoute);
   private authService = inject(Auth);
   private userId!: string | null;
@@ -75,10 +76,29 @@ export class StudentExams implements OnInit {
       this.subjectName = params['subjectName'];
     });
     this.userId = this.authService.getId();
+    this.isLoading = false;
+  }
+  progressValue: number = 100;
+  totalExamTimeInMs!: number;
+
+  startExam() {
+    this.isLoading=true
     this.examService.requestExam(this.userId!, this.subjectId).subscribe({
       next: (data) => {
         this.exam = data.data!;
         this.isLoading = false;
+        this.examStarted = true;
+    const now = new Date();
+    const endTime = new Date(
+      now.getTime() + this.exam.durationInMinutes * 60000
+    );
+    this.totalExamTimeInMs = endTime.getTime() - now.getTime();
+
+    localStorage.setItem('examStartTime', now.toISOString());
+    const questionIds = this.exam.questions.map((q) => q.id);
+    localStorage.setItem('examQuestionIds', JSON.stringify(questionIds));
+
+    this.startTimer(endTime);
         this.messageService.add({
           severity: 'success',
           summary: 'Exam Generated',
@@ -93,24 +113,7 @@ export class StudentExams implements OnInit {
         });
       },
     });
-  }
-  progressValue: number = 100;
-  totalExamTimeInMs!: number;
-
-  startExam() {
-    this.examStarted = true;
-    const now = new Date();
-    const endTime = new Date(
-      now.getTime() + this.exam.durationInMinutes * 60000
-    );
-        this.totalExamTimeInMs = endTime.getTime() - now.getTime();
-
-    localStorage.setItem('examStartTime', now.toISOString());
-    const questionIds = this.exam.questions.map((q) => q.id);
-    localStorage.setItem('examQuestionIds', JSON.stringify(questionIds));
-
-    this.startTimer(endTime);
-
+    
   }
   startTimer(end: Date) {
     this.timer = setInterval(() => {
@@ -124,13 +127,10 @@ export class StudentExams implements OnInit {
         const secs = Math.floor((diff % 60000) / 1000);
         this.timeLeft = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         this.progressValue = (diff / this.totalExamTimeInMs) * 100;
-
       }
     }, 1000);
   }
   submitExam() {
-    this.isLoading = true;
-    clearInterval(this.timer);
 
     const questionIds: string[] = JSON.parse(
       localStorage.getItem('examQuestionIds') || '[]'
@@ -142,30 +142,59 @@ export class StudentExams implements OnInit {
       selectedChoiceId: savedAnswers[qid] ?? null, // null if not answered
     }));
 
-    const payload: StudentExamDTO = {
-      examId: this.exam.examId,
-      questions: fullAnswerList,
-    };
-    console.log('Submitted:', payload);
-    this.examService.submitExam(payload).subscribe({
-      next: (res) => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Exam Submitted',
-          detail: res.message,
-        });
-        this.isLoading = false;
-        this.examSubmitted = true;
+const unansweredCount = fullAnswerList.filter(q => q.selectedChoiceId === null).length;
+
+  if (unansweredCount > 0) {
+    this.confirmationService.confirm({
+      message: `You have ${unansweredCount} unanswered question(s). Are you sure you want to submit?`,
+      header: 'Confirm Submission',
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'No',
+        severity: 'secondary',
+        variant: 'text',
       },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err.error.message,
-        });
+      acceptButtonProps: {
+        severity: 'danger',
+        label: 'Yes, Submit',
       },
+      accept: () => {
+        this.submitExamRequest(fullAnswerList);
+      }
     });
+  } else {
+    this.submitExamRequest(fullAnswerList);
   }
+  }
+  private submitExamRequest(fullAnswerList: ExamQuestionDTO[]) {
+  this.isLoading = true;
+  clearInterval(this.timer);
+
+  const payload: StudentExamDTO = {
+    examId: this.exam.examId,
+    questions: fullAnswerList,
+  };
+
+  this.examService.submitExam(payload).subscribe({
+    next: (res) => {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Exam Submitted',
+        detail: res.message,
+      });
+      this.isLoading = false;
+      this.examSubmitted = true;
+    },
+    error: (err) => {
+      this.isLoading = false;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: err.error.message,
+      });
+    },
+  });
+}
   nextQuestion() {
     if (this.currentPage < this.exam.questions.length - 1) {
       this.currentPage++;

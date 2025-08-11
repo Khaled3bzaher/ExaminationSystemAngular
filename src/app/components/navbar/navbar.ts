@@ -4,18 +4,22 @@ import { Auth } from '../../services/auth/auth';
 import { Popover } from 'primeng/popover';
 import { NotificationsHistory } from '../notifications-history/notifications-history';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { Button } from 'primeng/button';
+import { CommonModule } from '@angular/common';
 
 
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive,Popover,NotificationsHistory,OverlayBadgeModule  ],
+  imports: [RouterLink, RouterLinkActive,Popover,NotificationsHistory,OverlayBadgeModule,CommonModule  ],
 
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
 })
 export class Navbar {
   notificationCount = 0;
+  isDashboardOpen=false;
+  isUserMenuOpen=false;
   onNotificationCountChanged(count: number) {
   this.notificationCount = count;
 }

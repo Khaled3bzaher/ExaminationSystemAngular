@@ -1,67 +1,85 @@
-
-<nav>
+<nav class="bg-white shadow">
   <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-    <!-- Logo + Site Name -->
-    <div class="flex items-center gap-2 cursor-pointer" routerLink="/home">
-      <span class="text-2xl font-bold text-gray-900">Exams System</span>
-    </div>
+    <!-- Logo -->
+   <div class="flex items-center gap-2 cursor-pointer" routerLink="/home">
+  <span
+    class="text-2xl font-bold text-gray-900 transition-all duration-300 ease-in-out hover:text-blue-600"
+  >
+    Exams System
+  </span>
+</div>
 
-    <!-- Desktop Nav Links -->
+
+    <!-- Desktop Navigation -->
     <ul class="hidden md:flex gap-6 items-center text-gray-700 font-medium">
       <li>
         <a
           routerLink="/home"
           routerLinkActive="text-blue-600"
-          class="hover:text-blue-600 "
-          ><span class="pi pi-home"></span> Home</a
-        >
-      </li>
-      @if(isAdmin){
-      <li>
-        <a
-          routerLink="/dashboard"
-          routerLinkActive="text-blue-600"
           class="hover:text-blue-600"
-          ><span class="pi pi-cog"></span> Dashboard</a
         >
+          <span class="pi pi-home"></span> Home
+        </a>
       </li>
-      <li>
-        <a
-          routerLink="/dashboard/Configurations"
-          routerLinkActive="text-blue-600"
-          class="hover:text-blue-600"
-          ><span class="pi pi-key"></span> Configurations</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/students"
-          routerLinkActive="text-blue-600"
-          class="hover:text-blue-600"
-          ><span class="pi pi-users"></span> Students</a
-        >
-      </li>
-      }
+
       <li>
         <a
           routerLink="/subjects"
           routerLinkActive="text-blue-600"
           class="hover:text-blue-600"
-          ><span class="pi pi-graduation-cap"></span> Subjects</a
         >
+          <span class="pi pi-graduation-cap"></span> Subjects
+        </a>
       </li>
+
       <li>
         <a
           routerLink="/exams"
           routerLinkActive="text-blue-600"
           class="hover:text-blue-600"
-          ><span class="pi pi-history"></span> Exams</a
         >
+          <span class="pi pi-history"></span> Exams
+        </a>
       </li>
+
+      @if(isAdmin) {
+      <!-- Dashboard Dropdown -->
+      <li class="relative group">
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="text-blue-600"
+          class="hover:text-blue-600 flex items-center gap-2"
+        >
+          <span class="pi pi-cog"></span> Dashboard
+        </a>
+        <ul
+          class="absolute left-0 mt-1 w-52 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
+        >
+          <li>
+            <a
+              routerLink="/dashboard/Configurations"
+              routerLinkActive="text-blue-600"
+              class="px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+            >
+              <span class="pi pi-key"></span> Configurations
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/students"
+              routerLinkActive="text-blue-600"
+              class="px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+            >
+              <span class="pi pi-users"></span> Students
+            </a>
+          </li>
+        </ul>
+      </li>
+      }
     </ul>
 
-    <!-- Desktop Buttons -->
-    @if(!isAuthenticated){
+    <!-- Desktop Right Side -->
+    @if(!isAuthenticated) {
     <div class="hidden md:flex gap-4 items-center">
       <a
         routerLink="/login"
@@ -76,115 +94,131 @@
         Register
       </a>
     </div>
-    }@else {
+    } @else {
     <div class="hidden md:flex gap-4 items-center">
-      <p-overlaybadge severity="info" [value]="notificationCount" (click)="op.toggle($event)">
-</p-overlaybadge>
-    <p-popover #op>
-        <div class="flex flex-col gap-4 ">
-            <div>
-                <span class="font-medium text-surface-900 dark:text-surface-0 block mb-2">Notifications</span>
-                <app-notifications-history (notificationCount)="onNotificationCountChanged($event)"></app-notifications-history>
-            </div>
+      <!-- Notifications -->
+      <p-overlaybadge
+        class="cursor-pointer"
+        [value]="notificationCount"
+        badgeSize="small"
+        severity="info"
+        (click)="op.toggle($event)"
+      >
+        <i class="pi pi-bell text-lg"></i>
+      </p-overlaybadge>
+      <p-popover #op>
+        <div class="flex flex-col gap-4 w-[500px]">
+          <span class="font-medium">Notifications</span>
+          <app-notifications-history
+            (notificationCount)="onNotificationCountChanged($event)"
+          ></app-notifications-history>
         </div>
-    </p-popover>
-     <a
-          (click)="OnLogout()"
-          class="hover:text-blue-600 cursor-pointer text-gray-700 font-medium"
-          ><span class="pi pi-users"></span> {{ userName}}</a
+      </p-popover>
+
+      <!-- User Dropdown -->
+      <div class="relative group">
+        <a
+          class="hover:text-blue-600 cursor-pointer text-gray-700 font-medium flex items-center gap-2"
         >
-      
+          <span class="pi pi-users"></span> {{ userName }}
+        </a>
+        <div
+          class="absolute right-0 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
+        >
+          <a
+            (click)="OnLogout()"
+            class="px-4 py-2 hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
+          >
+            <span class="pi pi-sign-out"></span> Logout
+          </a>
+        </div>
+      </div>
     </div>
     }
 
     <!-- Mobile Menu Button -->
     <button class="md:hidden" (click)="toggleMobileMenu()">
-      @if (!menuOpen) {<svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="w-6 h-6 text-gray-700"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M4 6h16M4 12h16M4 18h16"
-        /></svg
-      >} @else {
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="w-6 h-6 text-gray-700"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
+      @if (!menuOpen) {
+      <i class="pi pi-bars text-xl"></i>
+      } @else {
+      <i class="pi pi-times text-xl"></i>
       }
     </button>
   </div>
 
-  @if(menuOpen){
+  <!-- Mobile Menu -->
+  @if(menuOpen) {
   <div class="md:hidden px-4 pb-4 space-y-2 text-gray-700">
     <a routerLink="/home" routerLinkActive="text-blue-600" class="block py-1"
-      >Home</a
+      ><span class="pi pi-home"></span> Home</a
     >
-    @if(isAdmin){
-    <a
-      routerLink="/students"
-      routerLinkActive="text-blue-600"
-      class="block py-1"
-      >Students</a
-    >
-    <a
-      routerLink="/dashboard"
-      routerLinkActive="text-blue-600"
-      class="block py-1"
-      >Dashboard</a
-    >
-    <a
-      routerLink="/dashboard/Configurations"
-      routerLinkActive="text-blue-600"
-      class="block py-1"
-      >Configurations</a
-    >
-    }
     <a
       routerLink="/subjects"
       routerLinkActive="text-blue-600"
       class="block py-1"
-      >Subjects</a
+      ><span class="pi pi-graduation-cap"></span> Subjects</a
     >
     <a routerLink="/exams" routerLinkActive="text-blue-600" class="block py-1"
-      >Exams</a
+      ><span class="pi pi-history"></span> Exams</a
     >
-    @if(!isAuthenticated){
+
+    @if(isAdmin) {
+    <!-- Mobile Dashboard Accordion -->
+    <div>
+      <button
+        (click)="isDashboardOpen = !isDashboardOpen"
+        class="flex justify-between w-full py-1 hover:text-blue-600"
+      >
+        <span><span class="pi pi-cog"></span> Dashboard</span>
+        <span
+          class="pi"
+          [ngClass]="isDashboardOpen ? 'pi-chevron-up' : 'pi-chevron-down'"
+        ></span>
+      </button>
+      @if(isDashboardOpen) {
+      <div class="pl-4 space-y-1">
+        <a routerLink="/students" class="block py-1"
+          ><span class="pi pi-users"></span> Students</a
+        >
+        <a routerLink="/dashboard/Configurations" class="block py-1"
+          ><span class="pi pi-key"></span> Configurations</a
+        >
+      </div>
+      }
+    </div>
+    } @if(!isAuthenticated) {
     <a
       routerLink="/login"
       class="block py-2 border border-blue-600 text-center text-blue-600 rounded hover:bg-blue-50"
+      >Login</a
     >
-      Login
-    </a>
     <a
       routerLink="/register"
       class="block py-2 bg-blue-600 text-white text-center rounded hover:bg-blue-700"
+      >Register</a
     >
-      Register
-    </a>
-    }@else {
-    <a
-      (click)="OnLogout()"
-      class="block py-2 bg-red-600 text-white text-center rounded hover:bg-red-700"
-    >
-      Logout
-    </a>
+    } @else {
+    <!-- Mobile User Menu -->
+    <div>
+      <button
+        (click)="isUserMenuOpen = !isUserMenuOpen"
+        class="flex justify-between w-full py-2 font-medium hover:text-blue-600"
+      >
+        <span><span class="pi pi-users"></span> {{ userName }}</span>
+        <span
+          class="pi"
+          [ngClass]="isUserMenuOpen ? 'pi-chevron-up' : 'pi-chevron-down'"
+        ></span>
+      </button>
+      @if(isUserMenuOpen) {
+      <a
+        (click)="OnLogout()"
+        class="block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+      >
+        <span class="pi pi-sign-out"></span> Logout
+      </a>
+      }
+    </div>
     }
   </div>
   }

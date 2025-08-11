@@ -18,6 +18,7 @@ import { CreateQuestionDTO } from '../../Interfaces/CreateQuestionDTO';
 import { QuestionChoiceDTO } from '../../Interfaces/QuestionChoiceDTO';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { InputText, InputTextModule } from 'primeng/inputtext';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 interface Column {
   field: string;
@@ -45,6 +46,7 @@ interface ExportColumn {
     SelectModule,
     RadioButton,
     RadioButtonModule,
+    ProgressSpinner,
     FormsModule,
     ConfirmDialog,
   ],
@@ -52,6 +54,7 @@ interface ExportColumn {
   styleUrl: './questions.css',
 })
 export class Questions {
+  isLoading = true;
   private questionsService = inject(QuestionsService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
@@ -124,6 +127,7 @@ export class Questions {
     this.questionsService.getSubjectQuestions(params).subscribe((res) => {
       this.subjectQuestions.set(res.data);
       this.totalCount.set(res.totalCount);
+      this.isLoading=false;
     });
   }
   editQuestion(question: QuestionResponse) {

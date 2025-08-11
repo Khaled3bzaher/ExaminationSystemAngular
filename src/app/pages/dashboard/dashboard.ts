@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { StatsResponse } from '../../Interfaces/StatsResponse';
 import { AdminService } from '../../services/admin-service';
 import { Toast } from 'primeng/toast';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ProgressSpinner } from 'primeng/progressspinner';
 
@@ -14,11 +14,25 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 })
 export class Dashboard {
   private adminService = inject(AdminService);
-  constructor(private router:Router,private messageService: MessageService) {}
+  constructor(private router:Router,private messageService: MessageService,private route: ActivatedRoute) {}
 
   stats!:StatsResponse;
   isLoading = true;
   ngOnInit(){
+    const navigation = this.route.queryParams.subscribe((params) => {
+      
+      if (params['login'] === 'true') {
+        setTimeout(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Login',
+            detail: 'You have logged in successfully!',
+            life: 3000,
+          });
+        }, 100);
+      }
+    });
+    
     this.adminService.getStats().subscribe({
       next:res=>{
         this.stats=res.data!;
@@ -32,5 +46,8 @@ export class Dashboard {
         });
       }
     })
-  }
+  };
+
+  
+  
 }

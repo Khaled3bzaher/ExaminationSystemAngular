@@ -44,7 +44,11 @@ export class Login {
     this.authService.loginRequest(loginData).subscribe({
       next: response =>{
           this.authService.saveToken(response.data!.token);
-          this.router.navigate(['/home'], { queryParams: { login: 'true' } });
+          if(this.authService.getRole()==="Admin"){
+          this.router.navigate(['/dashboard'], { queryParams: { login: 'true' } });
+          }else{
+            this.router.navigate(['/home'], { queryParams: { login: 'true' } });
+          }
           this.isLoading=false;
       },
       error: (err) => {

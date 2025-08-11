@@ -139,7 +139,7 @@ saveConfiguration() {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: err.error.message,
+        detail: err.error.message || err.error.validationErrors[0].errors[0],
       });
     },
   });

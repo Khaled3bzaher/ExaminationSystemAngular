@@ -9,7 +9,6 @@ import { Button } from "primeng/button";
 })
 export class ExamInstruction {
   @Output() accepted = new EventEmitter<void>();
-  @Input() durationInMinutes!: number;
   @Input() examName!: string;
   onAccept() {
       this.accepted.emit();

@@ -46,6 +46,7 @@ export class PreviewExam {
           summary: 'Error',
           detail: err.error.message,
         });
+        this.router.navigate(['/exams']);
       },
     });
   }

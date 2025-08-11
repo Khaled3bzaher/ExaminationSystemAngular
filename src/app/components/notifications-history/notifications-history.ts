@@ -1,7 +1,6 @@
 import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { NotificationResponse } from '../../Interfaces/NotificationResponse';
-import { DatePipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { NotificationsService } from '../../services/notifications-service';
 import { ProgressSpinner } from 'primeng/progressspinner';
@@ -12,7 +11,7 @@ import { Auth } from '../../services/auth/auth';
 
 @Component({
   selector: 'app-notifications-history',
-  imports: [TableModule,DatePipe,Button,ProgressSpinner,Paginator],
+  imports: [TableModule,Button,ProgressSpinner,Paginator],
   templateUrl: './notifications-history.html',
   styleUrl: './notifications-history.css'
 })
@@ -91,6 +90,24 @@ export class NotificationsHistory {
       }
     })
   }
+
+  getTimeAgo(dateString: string | Date): string {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffMs = now.getTime() - date.getTime();
+
+  const seconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+  if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+  return 'Just now';
+}
+
+
   onPageChange(event: PaginatorState) {
     this.pageIndex = event.page ?? 0;
     this.pageSize = event.rows ?? this.pageSize;

@@ -15,7 +15,7 @@
 <div class="p-20">
   @if(!examStarted && !examSubmitted){
   <div class="p-6 space-y-6">
-    <app-exam-instruction (accepted)="startExam()" [durationInMinutes]="exam.durationInMinutes" [examName]="exam.subjectName"></app-exam-instruction>
+    <app-exam-instruction (accepted)="startExam()" [examName]="subjectName"></app-exam-instruction>
   </div>
   } @if(examStarted && !examSubmitted){
   <div class="space-y-6">
@@ -105,3 +105,5 @@
     }
 </div>
 }
+  <p-confirmDialog [style]="{ width: '450px' }" class="rounded-md" />
+

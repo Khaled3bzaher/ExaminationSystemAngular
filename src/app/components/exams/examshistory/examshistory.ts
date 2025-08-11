@@ -13,6 +13,7 @@ import { AutoComplete } from 'primeng/autocomplete';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth } from '../../../services/auth/auth';
+import { NotificationsService } from '../../../services/notifications-service';
 
 @Component({
   selector: 'app-examshistory',
@@ -38,11 +39,11 @@ export class Examshistory {
   pageSize = 5;
   pageIndex = 0;
   search = '';
-  sorting = 'CreatedAtDesc';
+  sorting = { label: 'Created At (Newest)', value: 'CreatedAtDesc' };
   totalCount = signal(0);
   isAuthenticated :Boolean = false;
 
-  constructor(private router: Router, private messageService: MessageService) {
+  constructor(private router: Router, private messageService: MessageService,private notificationService: NotificationsService) {
     this.authService.isAuthenticatedSubject.subscribe((res) => {
       this.isAuthenticated = this.authService.isAuthenticatedSubject.getValue();
       if(!this.isAuthenticated) {
@@ -61,11 +62,13 @@ export class Examshistory {
     ) {
       this.studentId = this.authService.getId()!;
     }
-    this.loadExams();
+    this.notificationService.notifyNewNotification.subscribe((notification) => {
+      this.loadExams();
+    });
   }
   loadExams() {
     const params = new HttpParams()
-      .set('sorting', this.sorting)
+      .set('sorting', this.sorting.value)
       .set('PageIndex', this.pageIndex + 1)
       .set('PageSize', this.pageSize)
       .set('search', this.search)
@@ -113,19 +116,13 @@ export class Examshistory {
 
   // Method to filter options
   filterSorting(event: any) {
-    let filtered: any[] = [];
-    let query = event.query;
-
-    for (let option of this.sortingOptions) {
-      if (option.label.toLowerCase().includes(query.toLowerCase())) {
-        filtered.push(option);
-      }
-    }
-
-    this.filteredSortingOptions = filtered;
+    const query = event.query.toLowerCase();
+    this.filteredSortingOptions = this.sortingOptions.filter((option) =>
+      option.label.toLowerCase().includes(query)
+    );
   }
   onSortChange(event: any) {
-    console.log('Selected sorting:', event.value);
+    this.sorting = event.value;
     this.pageIndex = 0;
     this.loadExams();
   }

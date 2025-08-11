@@ -1,81 +1,79 @@
-
 @if(isLoading){
-<div class="card flex justify-center">
-  <p-progress-spinner
-    strokeWidth="8"
-    fill="transparent"
-    animationDuration=".5s"
-    [style]="{ width: '50px', height: '50px' }"
-  />
-</div>
+  <div class="card flex justify-center items-center min-h-[100px]">
+    <p-progress-spinner
+      strokeWidth="8"
+      fill="transparent"
+      animationDuration=".5s"
+      class="w-[50px] h-[50px]"
+    />
+  </div>
 }@else {
-<p-table 
-  #dt1
-  [value]="notificationsHistory()"
-  selectionMode="single"
-  [(selection)]="selectedNotification"
->
-  <ng-template #header>
-    <tr>
-      <th style="width: 25%">
-        <div class="flex items-center gap-2">Title</div>
-      </th>
-      <th style="width: 50%">
-        <div class="flex items-center gap-2">Message</div>
-      </th>
-      <th style="width: 20%">
-        <div class="flex items-center gap-2">Submitted</div>
-      </th>
-       @if(!isAdmin){
-      <th style="width: 5%">
-        <div class="flex items-center gap-2">Read</div>
-      </th>
-    }
-    </tr>
-  </ng-template>
-  <ng-template #body let-notificationHistory>
-    <tr [pSelectableRow]="notificationHistory">
-      <td>{{ notificationHistory.title }}</td>
-      <td>{{ notificationHistory.message }}</td>
-      <td>{{ notificationHistory.createdAt | date: 'short' }}</td>
-      @if(!isAdmin){
-      <td>
-        <p-button
-          icon="pi pi-eye" [rounded]="true"
-          (click)="markAsRead(notificationHistory.id)"
-        ></p-button>
-      </td>
-    }
-    </tr>
-  </ng-template>
-  <ng-template #body let-notificationHistory>
-    <tr [pSelectableRow]="notificationHistory">
-      <td>{{ notificationHistory.title }}</td>
-      <td>{{ notificationHistory.message }}</td>
-      <td>{{ notificationHistory.createdAt | date: 'short' }}</td>
-       @if(!isAdmin){
-      <td>
-        <p-button
-          icon="pi pi-eye" [rounded]="true"
-          (click)="markAsRead(notificationHistory.id)"
-        ></p-button>
-      </td>
-    }
-    </tr>
-  </ng-template>
-  <ng-template emptymessage>
-    <tr>
-      <td colspan="4">No Notifications found.</td>
-    </tr>
-  </ng-template>
-</p-table>
-<p-paginator
-    (onPageChange)="onPageChange($event)"
-    [first]="pageIndex * pageSize"
+  <div class="overflow-auto">
+    <p-table 
+      #dt1
+      [value]="notificationsHistory()"
+      selectionMode="single"
+      [(selection)]="selectedNotification"
+      class="w-full"
+    >
+      
+      <ng-template #body let-notificationHistory>
+        <tr [pSelectableRow]="notificationHistory" class="h-12">
+          <td class="w-full px-3 py-2 align-top">
+            <div class="flex flex-col w-full space-y-0.5">
+              <div class="font-bold text-base leading-tight">
+                {{ notificationHistory.title }}
+              </div>
+              <div class="text-gray-600 text-sm leading-snug">
+                {{ notificationHistory.message }}
+              </div>
+              <div class="flex justify-between items-center text-xs text-gray-500 mt-0.5">
+                <span>
+                  {{ getTimeAgo(notificationHistory.createdAt) }}
+                </span>
+              </div>
+            </div>
+          </td>
+          @if(!isAdmin){
+          <td class="hidden md:table-cell w-[60px] px-2 py-1 align-middle">
+            <p-button
+              icon="pi pi-eye" 
+              severity="info"
+              (click)="markAsRead(notificationHistory.id)"
+              class="w-7 h-7"
+            ></p-button>
+          </td>
+          }@else {
+          <td class="hidden md:table-cell w-[60px] px-2 py-1 align-middle">
+            <p-button
+              icon="pi pi-eye" 
+              severity="info"
+              disabled="true"
+              (click)="markAsRead(notificationHistory.id)"
+              class="w-7 h-7"
+            ></p-button>
+          </td>
+          }
+        </tr>
+      </ng-template>
+
+      <ng-template emptymessage>
+        <tr>
+          <td colspan="2" class="text-center py-3">No Notifications found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+    
+    <p-paginator
+      (onPageChange)="onPageChange($event)"
+      [first]="pageIndex * pageSize"
       [rows]="pageSize"
       [totalRecords]="totalCount()"
-    [showCurrentPageReport]="true"
-    [showPageLinks]="false"
-    [showJumpToPageDropdown]="false"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" />
+      [showCurrentPageReport]="true"
+      [showPageLinks]="false"
+      [showJumpToPageDropdown]="false"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+      class="h-12"
+    />
+  </div>
 }

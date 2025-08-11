@@ -100,9 +100,8 @@
     >
       <ng-template #header>
         <img
-          (click)="QuestionsNavigation(subject)"
           alt="Card Image"
-          class="w-full hover:cursor-pointer h-48 object-cover rounded-t-lg"
+          class="w-full h-48 object-cover rounded-t-lg"
           src="https://primefaces.org/cdn/primeng/images/card-ng.jpg"
         />
       </ng-template>
@@ -136,7 +135,15 @@
             class="w-full"
             styleClass="w-full"
           ></p-button>
-          }
+          <p-button
+            label="Questions"
+            icon="pi pi-pencil"
+            severity="info"
+            (click)="QuestionsNavigation(subject)"
+            class="w-full"
+            styleClass="w-full"
+          ></p-button>
+          }@else {
           <p-button
             label="Exam"
             icon="pi pi-pencil"
@@ -145,6 +152,7 @@
             class="w-full"
             styleClass="w-full"
           ></p-button>
+          }
         </div>
       </ng-template>
     </p-card>
